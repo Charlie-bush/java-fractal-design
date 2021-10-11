@@ -32,19 +32,9 @@ public class ComplexNumber {
     }
 
     public ComplexNumber divide(ComplexNumber z){
-        ComplexNumber result = new ComplexNumber();
-        ComplexNumber numerator = this.multiply(z.conjugate());
-        ComplexNumber denominator = z.multiply(z.conjugate());
-        double denominatorDouble = denominator.getRealPart();
-        //Divide by zero error here catch with null
-        if(denominatorDouble==0){
-            return null;
-        }
-
-        result.setRealPart(numerator.getRealPart()/denominatorDouble);
-        result.setImaginaryPart(numerator.getImaginaryPart()/denominatorDouble);
-
-        return result;
+        double k = Math.pow(z.imaginaryPart, 2) + Math.pow(z.realPart, 2);
+        return new ComplexNumber( (this.realPart * z.realPart + this.imaginaryPart * z.imaginaryPart) / k,
+                (this.imaginaryPart * z.realPart - this.realPart * z.imaginaryPart) / k);
     }
 
     public ComplexNumber() {
@@ -55,6 +45,24 @@ public class ComplexNumber {
     public ComplexNumber(double realPart, double imaginaryPart) {
         this.realPart = realPart;
         this.imaginaryPart = imaginaryPart;
+    }
+    public double absoluteValue(){
+        return Math.sqrt(Math.pow(this.realPart,2)+Math.pow(this.imaginaryPart,2));
+    }
+    public double argument(){
+        return Math.atan2(this.imaginaryPart,this.realPart);
+    }
+
+    public ComplexNumber complexPower(double power){
+        double r = Math.pow(this.absoluteValue(),power);
+        double theta = power * this.argument();
+        return new ComplexNumber(Math.cos(theta)*r,Math.sin(theta)*r);
+    }
+    public boolean equals(ComplexNumber z, double tolerance){
+        return (euclideanDistance(z) <= tolerance);
+    }
+    public double euclideanDistance(ComplexNumber z){
+        return Math.sqrt(Math.pow(this.realPart-z.getRealPart(),2)+Math.pow(this.imaginaryPart-z.getImaginaryPart(),2));
     }
 
     public double getRealPart() {
